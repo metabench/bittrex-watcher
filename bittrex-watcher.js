@@ -12,6 +12,7 @@
 var tools = require('lang-mini');
 var each = tools.each;
 var Evented_Class = tools.Evented_Class;
+var Fns = tools.Fns;
 
 //var autobahn = require('autobahn');
 var request = require('request');
@@ -209,6 +210,13 @@ class Bittrex_Watcher extends Evented_Class {
         });
 
 
+    }
+
+    download_bittrex_structure(callback) {
+        Fns([
+            [this, this.get_at_all_currencies_info, []],
+            [this, this.get_at_all_markets_info, []]
+        ]).go(callback);
     }
 
     get_markets_info_by_market_names(arr_names, callback) {
