@@ -9,9 +9,9 @@
 
 // Could make subscribing to an autobahn or other type of data stream a function of the database.
 
-var jsgui = require('jsgui3');
-var each = jsgui.each;
-var Evented_Class = jsgui.Evented_Class;
+var tools = require('lang-mini');
+var each = tools.each;
+var Evented_Class = tools.Evented_Class;
 
 //var autobahn = require('autobahn');
 var request = require('request');
@@ -20,7 +20,15 @@ var Arr_Table = require('arr-table');
 
 //var present = require('present');
 
+var node_bittrex = require('node.bittrex.api');
+
 // It's possible this Bittrex watcher could be given a GUI as well.
+
+// This may take a watching network - or use specific proxies?
+//  Rather than proxies with their possibly tracable HTTP, we could do our own proxying / distribution.
+
+// Could have a universal API for gathering crypto data from exchanges.
+// 
 
 class Bittrex_Watcher extends Evented_Class {
     'constructor'() {
@@ -83,12 +91,7 @@ class Bittrex_Watcher extends Evented_Class {
                 }
             });
         }
-
-        
-
     }
-
-
 
     'subscribe_to_active_currency_pairs'() {
         // get the active currency pairs
@@ -119,7 +122,6 @@ class Bittrex_Watcher extends Evented_Class {
             //console.log('error:', err); // Print the error if one occurred 
             //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received 
             //console.log('body:', body); // Print the HTML for the Google homepage. 
-
             if (err) {
                 throw callback(err);
             } else {
@@ -141,7 +143,6 @@ class Bittrex_Watcher extends Evented_Class {
                 var keys = Object.keys(obj_body.result[0]);
                 var res = [keys, arr_items];
                 callback(null, res);
-
                 // Possibly snapshots of readings of results such as this should be put in the DB.
             }
         });
@@ -170,6 +171,8 @@ class Bittrex_Watcher extends Evented_Class {
 
     // Could get an array_table with the info
     'get_all_markets_info'(callback) {
+        console.log('get_all_markets_info');
+        //throw 'stop';
         // https://bittrex.com/api/v1.1/public/getmarkets
 
         request('https://bittrex.com/api/v1.1/public/getmarkets', function (err, response, body) {
@@ -203,7 +206,9 @@ class Bittrex_Watcher extends Evented_Class {
                 var res = new Arr_Table(ami);
                 callback(null, res);
             }
-        })
+        });
+
+
     }
 
     get_markets_info_by_market_names(arr_names, callback) {
@@ -224,8 +229,6 @@ class Bittrex_Watcher extends Evented_Class {
 
         // Use a more reliable HTTP request system?
         //  Could use multiple attempts to download.
-
-
 
         request('https://bittrex.com/api/v1.1/public/getmarketsummaries', function (err, response, body) {
             //console.log('error:', err); // Print the error if one occurred 

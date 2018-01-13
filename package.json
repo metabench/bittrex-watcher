@@ -3,10 +3,11 @@
   "main": "bittrex-watcher.js",
   "license": "MIT",
   "dependencies": {
-    "request": "^2.81.0",
-    "moment": "^2.18.1",
-    "jsgui3": "^0.0.8",
-    "arr-table": "^0.0.1"
+    "arr-table": "^0.0.1",
+    "lang-mini": "^0.0.1",
+    "moment": "^2.19.2",
+    "node.bittrex.api": "^1.0.0",
+    "request": "^2.83.0"
   },
   "engines": {
     "node": ">=8.5.0"
@@ -17,5 +18,5 @@
     "type": "git",
     "url": "https://github.com/metabench/bittrex-watcher.git"
   },
-  "version": "0.0.2"
+  "version": "0.0.4"
 }
