@@ -32,12 +32,12 @@ var node_bittrex = require('node.bittrex.api');
 // 
 
 class Bittrex_Watcher extends Evented_Class {
-    'constructor'() {
+    'constructor' () {
         super();
         // Could set up the functions / handlers here, not on start?
         // or have subscribe methods, and then events get raised.
     }
-    'start'(callback) {
+    'start' (callback) {
         // Should start watching, for convenience.
         //  Default watching options.
         //  Could possibly have a GUI too.
@@ -68,7 +68,9 @@ class Bittrex_Watcher extends Evented_Class {
                 */
 
                 that.get_market_summaries_filter_by_arr_currencies(arr_symbols_watching, (err, at_filtered_market_summaries) => {
-                    if (err) { callback(err); } else {
+                    if (err) {
+                        callback(err);
+                    } else {
                         console.log('at_filtered_market_summaries', at_filtered_market_summaries);
                         console.log('at_filtered_market_summaries.length', at_filtered_market_summaries.length);
 
@@ -86,20 +88,20 @@ class Bittrex_Watcher extends Evented_Class {
                     throw err;
                 } else {
                     console.log('currencies', currencies);
-    
+
                     // Should be easy enough to load simple records into the database.
-    
+
                 }
             });
         }
     }
 
-    'subscribe_to_active_currency_pairs'() {
+    'subscribe_to_active_currency_pairs' () {
         // get the active currency pairs
 
     }
 
-    'get_all_currencies_names_codes'(callback) {
+    'get_all_currencies_names_codes' (callback) {
         var that = this;
         that.get_all_currencies_info((err, currencies_info) => {
             if (err) {
@@ -116,7 +118,7 @@ class Bittrex_Watcher extends Evented_Class {
         })
     }
 
-    'get_all_currencies_info'(callback) {
+    'get_all_currencies_info' (callback) {
         // https://bittrex.com/api/v1.1/public/getcurrencies
 
         request('https://bittrex.com/api/v1.1/public/getcurrencies', function (err, response, body) {
@@ -129,7 +131,8 @@ class Bittrex_Watcher extends Evented_Class {
                 var obj_body = JSON.parse(body);
                 //console.log('obj_body', obj_body);
 
-                var arr_items = [], arr_values;
+                var arr_items = [],
+                    arr_values;
                 each(obj_body.result, (item) => {
                     if (item) {
                         arr_values = [];
@@ -149,9 +152,65 @@ class Bittrex_Watcher extends Evented_Class {
         });
     }
 
-    'get_at_all_currencies_info'(callback) {
+    'get_map_currencies_info' (callback) {
+        this.get_all_currencies_info((err, res_info) => {
+            if (err) {
+                callback(err);
+            } else {
+                let res = {};
+                let [keys, arr_info] = res_info;
+                //console.log('keys', keys);
+
+                each(arr_info, item => {
+                    //console.log('item', item);
+                    //throw 'stop';
+                    res[item[0]] = item;
+                })
+                callback(null, res);
+            }
+        })
+    }
+
+    'get_currency_codes' (callback) {
+        request('https://bittrex.com/api/v1.1/public/getcurrencies', function (err, response, body) {
+            //console.log('error:', err); // Print the error if one occurred 
+            //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received 
+            //console.log('body:', body); // Print the HTML for the Google homepage. 
+            if (err) {
+                throw callback(err);
+            } else {
+                var obj_body = JSON.parse(body);
+                //console.log('obj_body', obj_body);
+
+                var arr_items = [],
+                    arr_values;
+                each(obj_body.result, (item) => {
+                    if (item) {
+                        //arr_values = [];
+                        /*
+                        each(item, (val) => {
+                            console.log('item', item);
+                            arr_values.push(val.Currency);
+                        });
+                        */
+                        //throw 'stop';
+                        arr_items.push(item.Currency);
+                    }
+                });
+
+                //var keys = Object.keys(obj_body.result[0]);
+                //var res = [keys, arr_items];
+                callback(null, arr_items);
+                // Possibly snapshots of readings of results such as this should be put in the DB.
+            }
+        });
+    }
+
+    'get_at_all_currencies_info' (callback) {
         this.get_all_currencies_info((err, aci) => {
-            if (err) { callback(err); } else {
+            if (err) {
+                callback(err);
+            } else {
                 var res = new Arr_Table(aci);
                 callback(null, res);
             }
@@ -160,10 +219,12 @@ class Bittrex_Watcher extends Evented_Class {
 
     // selected currencies info
 
-    'get_at_selected_currencies_info'(arr_currencies, callback) {
+    'get_at_selected_currencies_info' (arr_currencies, callback) {
         var that = this;
         this.get_at_all_currencies_info((err, at_all_currencies_info) => {
-            if (err) { callback(err); } else {
+            if (err) {
+                callback(err);
+            } else {
                 console.log('at_all_currencies_info', at_all_currencies_info);
             }
         });
@@ -171,7 +232,7 @@ class Bittrex_Watcher extends Evented_Class {
 
 
     // Could get an array_table with the info
-    'get_all_markets_info'(callback) {
+    'get_all_markets_info' (callback) {
         console.log('get_all_markets_info');
         //throw 'stop';
         // https://bittrex.com/api/v1.1/public/getmarkets
@@ -180,14 +241,15 @@ class Bittrex_Watcher extends Evented_Class {
             //console.log('error:', err); // Print the error if one occurred 
             //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received 
             //console.log('body:', body); // Print the HTML for the Google homepage. 
-            
+
             if (err) {
                 throw callback(err);
             } else {
                 var obj_body = JSON.parse(body);
                 //console.log('obj_body', obj_body);
                 var keys = Object.keys(obj_body.result[0]);
-                var arr_items = [], arr_values;
+                var arr_items = [],
+                    arr_values;
                 each(obj_body.result, (item) => {
                     arr_values = [];
                     each(item, (val) => {
@@ -203,7 +265,9 @@ class Bittrex_Watcher extends Evented_Class {
 
     get_at_all_markets_info(callback) {
         this.get_all_markets_info((err, ami) => {
-            if (err) { callback(err); } else {
+            if (err) {
+                callback(err);
+            } else {
                 var res = new Arr_Table(ami);
                 callback(null, res);
             }
@@ -222,7 +286,9 @@ class Bittrex_Watcher extends Evented_Class {
     get_markets_info_by_market_names(arr_names, callback) {
         var that = this;
         that.get_at_all_markets_info((err, at_all_markets_info) => {
-            if (err) { callback(err); } else {
+            if (err) {
+                callback(err);
+            } else {
                 // filter by the value of the MarketName field
                 var res = at_all_markets_info.select_matching_field_values('MarketName', arr_names);
                 callback(null, res);
@@ -232,7 +298,7 @@ class Bittrex_Watcher extends Evented_Class {
 
     // get market summaries
 
-    'get_all_markets_summaries'(callback) {
+    'get_all_markets_summaries' (callback) {
         // https://bittrex.com/api/v1.1/public/getmarkets
 
         // Use a more reliable HTTP request system?
@@ -242,7 +308,7 @@ class Bittrex_Watcher extends Evented_Class {
             //console.log('error:', err); // Print the error if one occurred 
             //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received 
             //console.log('body:', body); // Print the HTML for the Google homepage. 
-            
+
             if (err) {
                 console.trace();
                 throw callback(err);
@@ -251,11 +317,12 @@ class Bittrex_Watcher extends Evented_Class {
                 // try parsing the JSON.
                 //  Any problem, raise an error callback.
 
-                try {  
+                try {
                     var obj_body = JSON.parse(body);
                     //console.log('obj_body', obj_body);
                     var keys = Object.keys(obj_body.result[0]);
-                    var arr_items = [], arr_values;
+                    var arr_items = [],
+                        arr_values;
                     each(obj_body.result, (item) => {
                         arr_values = [];
                         each(item, (val) => {
@@ -264,25 +331,25 @@ class Bittrex_Watcher extends Evented_Class {
                         arr_items.push(arr_values);
                     });
                     var res = [keys, arr_items];
-                    
-                }  
-                catch(exception){  
-                      console.log('exception', exception);
-                      console.trace();
-                      callback(exception);
-                }  
-                finally {  
-                      
+
+                } catch (exception) {
+                    console.log('exception', exception);
+                    console.trace();
+                    callback(exception);
+                } finally {
+
                 }
                 if (res) callback(null, res);
-                
+
             }
         });
     }
 
-    'get_at_all_market_summaries'(callback) {
+    'get_at_all_market_summaries' (callback) {
         this.get_all_markets_summaries((err, ams) => {
-            if (err) { callback(err); } else {
+            if (err) {
+                callback(err);
+            } else {
                 var res = new Arr_Table(ams);
                 callback(null, res);
             }
@@ -291,10 +358,12 @@ class Bittrex_Watcher extends Evented_Class {
 
     // get market summaries filter by market names
 
-    'get_market_summaries_filter_by_arr_market_names'(arr_market_names, callback) {
+    'get_market_summaries_filter_by_arr_market_names' (arr_market_names, callback) {
         var tm_market_names = jsgui.get_truth_map_from_arr(arr_market_names);
         this.get_at_all_market_summaries((err, at_ams) => {
-            if (err) { callback(err); } else {
+            if (err) {
+                callback(err);
+            } else {
                 //var res = new Arr_Table(ams);
                 //callback(null, res);
                 var res = at_ams.select_at_matching_fn((value) => {
@@ -315,10 +384,12 @@ class Bittrex_Watcher extends Evented_Class {
 
     // get market summaries filter by arr currencies
 
-    'get_market_summaries_filter_by_arr_currencies'(arr_currencies, callback) {
+    'get_market_summaries_filter_by_arr_currencies' (arr_currencies, callback) {
         var tm_currencies = jsgui.get_truth_map_from_arr(arr_currencies);
         this.get_at_all_market_summaries((err, at_ams) => {
-            if (err) { callback(err); } else {
+            if (err) {
+                callback(err);
+            } else {
                 //var res = new Arr_Table(ams);
                 //callback(null, res);
                 var res = at_ams.select_at_matching_fn((value) => {
@@ -337,9 +408,11 @@ class Bittrex_Watcher extends Evented_Class {
         })
     }
 
-    'get_arr_market_names_by_arr_currencies'(arr_currencies, callback) {
+    'get_arr_market_names_by_arr_currencies' (arr_currencies, callback) {
         this.get_market_summaries_filter_by_arr_currencies(arr_currencies, (err, at_market_summaries) => {
-            if (err) { callback(err); } else {
+            if (err) {
+                callback(err);
+            } else {
                 // then get the field that represents the name
                 //console.log('at_market_summaries.keys', at_market_summaries.keys);
                 var res = at_market_summaries.get_arr_field_values('MarketName');
@@ -350,22 +423,22 @@ class Bittrex_Watcher extends Evented_Class {
 
     // select markets by currencies
     // get_at_markets_info_
-    'get_ticker_data'(callback) {
-        
+    'get_ticker_data' (callback) {
+
     }
-    'subscribe_to_ticker'(callback) {
+    'subscribe_to_ticker' (callback) {
         // This is for all markets I think.
         var that = this;
 
-        
+
     }
 
-    'subscribe_to_market'(market, callback) {
+    'subscribe_to_market' (market, callback) {
         if (callback) callback(null, true);
 
     }
 
-    'subscribe_to_all_markets'(callback) {
+    'subscribe_to_all_markets' (callback) {
         //var fns = jsgui.Fns();
         this.get_active_currency_pairs((err, arr_pairs) => {
             each(arr_pairs, (pair) => {
@@ -377,7 +450,7 @@ class Bittrex_Watcher extends Evented_Class {
         if (callback) callback(null, true);
     }
 
-    'get_active_currency_pairs'(callback) {
+    'get_active_currency_pairs' (callback) {
         this.get_ticker_data((err, ticker_data) => {
             if (err) {
                 throw err;
@@ -387,7 +460,7 @@ class Bittrex_Watcher extends Evented_Class {
         })
     }
 
-    'get_active_currencies'(callback) {
+    'get_active_currencies' (callback) {
         request('https://bittrex.com/public?command=returnCurrencies', function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 //console.log('get_active_currency_pairs body', body);
