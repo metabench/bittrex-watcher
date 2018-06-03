@@ -359,18 +359,19 @@ const get_bittrex_coins_markets = (callback) => {
                     let [market_name, base_name] = exch_market_name.split('-');
                     //console.log('[market_name, base_name]', [market_name, base_name]);
 
-                    let market_coin_on_exchange = map_coins_by_map_exchange[exchange_name][market_name];
-                    let base_coin_on_exchange = map_coins_by_map_exchange[exchange_name][base_name];
+                    let market_exchange_coin = map_coins_by_map_exchange[exchange_name][market_name];
+                    let base_exchange_coin = map_coins_by_map_exchange[exchange_name][base_name];
 
-                    //console.log('market_coin_on_exchange', market_coin_on_exchange);
-                    //console.log('base_coin_on_exchange', base_coin_on_exchange);
+                    //console.log('market_exchange_coin', market_exchange_coin);
+                    //console.log('base_exchange_coin', base_exchange_coin);
 
 
-                    if (market_coin_on_exchange && base_coin_on_exchange) {
+                    if (market_exchange_coin && base_exchange_coin) {
                         let market = new Exchange_Market({
                             'exchange': bittrex,
-                            'market_coin_on_exchange': market_coin_on_exchange,
-                            'base_coin_on_exchange': base_coin_on_exchange
+                            'market_exchange_coin': market_exchange_coin,
+                            'base_exchange_coin': base_exchange_coin,
+                            'name': exch_market_name
                         })
                         // then array / map of markets
 
@@ -1156,6 +1157,7 @@ if (require.main === module) {
 
         let obs_snapshots = watch_bittrex_snaphots(6000);
         obs_snapshots.on('next', data => {
+            console.log('data', data);
 
             console.log('data[20]', data[20]);
 
