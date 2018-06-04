@@ -6,6 +6,7 @@
     "arr-kv-table": "0.0.1",
     "arr-table": "^0.0.5",
     "fnl": "^0.0.2",
+    "fin-data": "^0.0.4",
     "lang-mini": "^0.0.6",
     "moment": "^2.19.2",
     "node-fetch": "^2.1.2",
@@ -21,5 +22,5 @@
     "type": "git",
     "url": "https://github.com/metabench/bittrex-watcher.git"
   },
-  "version": "0.0.8"
+  "version": "0.0.9"
 }
