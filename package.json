@@ -5,13 +5,13 @@
   "dependencies": {
     "arr-kv-table": "0.0.1",
     "arr-table": "^0.0.5",
-    "fnl": "^0.0.2",
-    "fin-data": "^0.0.4",
-    "lang-mini": "^0.0.6",
-    "moment": "^2.19.2",
-    "node-fetch": "^2.1.2",
+    "fin-data": "^0.0.7",
+    "fnl": "^0.0.6",
+    "lang-mini": "^0.0.8",
+    "moment": "^2.22.2",
+    "node-fetch": "^2.2.0",
     "node.bittrex.api": "^1.0.0",
-    "request": "^2.83.0"
+    "request": "^2.88.0"
   },
   "engines": {
     "node": ">=8.5.0"
@@ -22,5 +22,5 @@
     "type": "git",
     "url": "https://github.com/metabench/bittrex-watcher.git"
   },
-  "version": "0.0.9"
+  "version": "0.0.10"
 }

@@ -1146,6 +1146,9 @@ p.get_markets_info = p.get_at_all_markets_info;
 
 Bittrex_Watcher.watch_bittrex_snaphots = watch_bittrex_snaphots;
 
+// Use this to make a historic and live data service.
+
+
 
 //console.log('require.main', require.main);
 if (require.main === module) {
@@ -1155,20 +1158,19 @@ if (require.main === module) {
         //console.log('snapshots', snapshots);
 
 
-        let obs_snapshots = watch_bittrex_snaphots(6000);
+        let obs_snapshots = watch_bittrex_snaphots(1000);
         obs_snapshots.on('next', data => {
             console.log('data', data);
 
-            console.log('data[20]', data[20]);
+            console.log('Object.keys(data)', Object.keys(data));
+
+            //console.log('data[20]', data[20]);
 
 
-            console.log('data.length', data.length);
-
-
-
-
+            //console.log('data.length', data.length);
             // 
 
+            // Still want the DB running in the background, get the data from the DB.
 
 
         });
